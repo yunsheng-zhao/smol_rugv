@@ -12,10 +12,8 @@
 - vla_bridge_node：连接 ROS2 与 smol_vla_policy.py；异步推理动作块并输出控制建议
 
 ## 系统级数据流与控制流
-- 输入数据流：camera_node -> /camera/image_raw；chassis_driver_node -> /odom、/imu/data；speech_node -> /instruction_text
-- 控制流：vla_bridge_node -> /cmd_vel_vla -> chassis_driver_node（内部仲裁与限幅）-> 电机
-- 接管与急停：/teleop/cmd_vel 与 /e_stop 由 chassis_driver_node 内部仲裁模块直接生效
-- 优先级：急停 > 人为接管 > 安全限幅 > 自动决策（VLA/语音意图）
+- 输入数据流：camera_node -> /camera/image_raw；chassis_driver_node -> /odom/odom_raw、/imu/data_raw；speech_node -> /instruction_text
+- 控制流：vla_bridge_node -> /cmd_vel -> chassis_driver_node -> 电机
 
 ## ROS 接口表
 
@@ -32,20 +30,18 @@
 ### Chassis（含内置安全仲裁模块）
 | 名称 | 方向 | 类型 | 频率 | QoS | frame_id | 异常/超时行为 |
 |---|---|---|---|---|---|---|
-| /cmd_vel_vla | 订阅 | geometry_msgs/Twist | 0–20 Hz（异步） | Reliable, depth=10, volatile | base_link | 超时>200ms将其视为无效输入并刹停 |
-| /teleop/cmd_vel | 订阅 | geometry_msgs/Twist | 0–20 Hz | Reliable, depth=10, volatile | base_link | 作为接管输入，优先级高于 /cmd_vel_vla |
-| /e_stop | 订阅 | std_msgs/Bool | 事件驱动 | Reliable, depth=10, volatile | n/a | true 时立即输出零速度并保持 |
-| /odom | 发布 | nav_msgs/Odometry | 50 Hz | sensor_data（BestEffort, depth=10） | odom | 串口/编码器异常时降频并标记状态 |
-| /imu/data | 发布 | sensor_msgs/Imu | 100 Hz | sensor_data（BestEffort, depth=10） | base_link | IMU异常时发布诊断并启用退化策略 |
+| /cmd_vel | 订阅 | geometry_msgs/Twist | 0–20 Hz（异步） | Reliable, depth=10, volatile | base_link | 超时>200ms将其视为无效输入并刹停 |
+| /odom/odom_raw | 发布 | nav_msgs/Odometry | 50 Hz | sensor_data（BestEffort, depth=10） | odom | 串口/编码器异常时降频并标记状态 |
+| /imu/data_raw | 发布 | sensor_msgs/Imu | 100 Hz | sensor_data（BestEffort, depth=10） | base_link | IMU异常时发布诊断并启用退化策略 |
 
 ### VLA
 | 名称 | 方向 | 类型 | 频率 | QoS | frame_id | 异常/超时行为 |
 |---|---|---|---|---|---|---|
 | /camera/image_raw | 订阅 | sensor_msgs/Image | 30 Hz | sensor_data（BestEffort, depth=10） | camera_link | 图像超时则停止产生控制建议 |
-| /odom | 订阅 | nav_msgs/Odometry | 50 Hz | sensor_data（BestEffort, depth=10） | odom | 失联时进入保守模式或停驶 |
-| /imu/data | 订阅 | sensor_msgs/Imu | 100 Hz | sensor_data（BestEffort, depth=10） | base_link | 失联时进入保守模式或停驶 |
+| /odom/odom_raw | 订阅 | nav_msgs/Odometry | 50 Hz | sensor_data（BestEffort, depth=10） | odom | 失联时进入保守模式或停驶 |
+| /imu/data_raw | 订阅 | sensor_msgs/Imu | 100 Hz | sensor_data（BestEffort, depth=10） | base_link | 失联时进入保守模式或停驶 |
 | /instruction_text | 订阅 | std_msgs/String | 事件驱动 | Reliable, depth=10 | n/a | 指令解析失败时忽略该事件 |
-| /cmd_vel_vla | 发布 | geometry_msgs/Twist | 0–20 Hz（异步） | Reliable, depth=10 | base_link | 推理不可用时不发布或发布零速度建议 |
+| /cmd_vel | 发布 | geometry_msgs/Twist | 0–20 Hz（异步） | Reliable, depth=10 | base_link | 推理不可用时不发布或发布零速度建议 |
 
 ## 时序策略（适配 smol_vla 动作块异步推理）
 
@@ -55,7 +51,7 @@
 - 语音：按事件处理，不与 image/imu 强制同步；指令需携带时间戳并设置有效期（例如 2–5s）
 
 ### 动作队列与提前触发
-- 控制循环：固定频率执行（例如 20Hz），从动作队列取下一步动作并形成 /cmd_vel_vla 建议流
+- 控制循环：固定频率执行（例如 20Hz），从动作队列取下一步动作并形成 /cmd_vel 建议流
 - 推理线程：异步预测动作块并补充队列（非阻塞）
 - 提前触发：当队列剩余低于阈值（例如剩余 <30% 或 <T_low 秒）时触发新的动作块预测
 - 块融合：新旧动作块存在重叠区间时按简单拼接/加权融合规则合并，避免切换抖动
@@ -63,12 +59,10 @@
 - 部署：默认策略模块运行在 vla 进程内（smol_vla_policy.py）
 
 ### 控制输出治理（在底盘内置仲裁模块实现）
-- 以 /cmd_vel_vla、/teleop/cmd_vel、/e_stop 为输入进行仲裁
-- 对速度与加速度做限幅与平滑
-- 对控制输入做 watchdog：超时或失效时输出零速度并保持到恢复
+- 以 /cmd_vel 为输入进行处理
 
 ## 故障与降级
-- 摄像头断开/超时：VLA 停止产生控制建议；底盘仲裁模块在输入超时后刹停
+- 摄像头断开/超时：VLA 停止产生控制建议；底盘在输入超时后刹停
 - 语音模块故障：不影响底盘安全；仅失去语义驱动能力
 - 模型推理不可用或过慢：动作队列耗尽后刹停；建议切换接管
 - 串口/底盘异常：底盘侧优先自刹；上位机记录诊断并尝试重连
@@ -83,7 +77,7 @@
   1. chassis_driver_node
   2. camera_node / speech_node
   3. vla_bridge_node
-- rosbag 录制（建议）：/camera/image_raw、/odom、/imu/data、/cmd_vel_vla、/teleop/cmd_vel、/e_stop、/instruction_text
+- rosbag 录制（建议）：/camera/image_raw、/odom/odom_raw、/imu/data_raw、/cmd_vel、/instruction_text
 
 ## 配置管理
 - 参数分层：

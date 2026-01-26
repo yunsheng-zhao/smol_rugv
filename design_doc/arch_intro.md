@@ -24,15 +24,15 @@ vla/：负责大模型桥接与推理决策 。
 主要任务：通过串口与 ESP32 通信，实现底层协议解析、轮速及 IMU 数据解码，并将控制指令下发给电机 。
 通信话题 ：
 订阅：/cmd_vel (消息类型：geometry_msgs/Twist) 。
-发布：/odom (消息类型：nav_msgs/Odometry) 。
-发布：/imu/data (消息类型：sensor_msgs/Imu) 。
+发布：/odom/odom_raw (消息类型：nav_msgs/Odometry) 。
+发布：/imu/data_raw (消息类型：sensor_msgs/Imu) 。
 
 4. VLA Package (决策桥接包)
 
 主要任务：作为“大脑”，负责连接 ROS2 环境与 smolVLA / LeRobot 推理框架 。
 节点设置：该包仅包含一个核心节点 vla_bridge_node 。
 通信话题 ：
-订阅：/camera/image_raw、/odom、/imu/data 以及 /instruction_text 。
+订阅：/camera/image_raw、/odom/odom_raw、/imu/data_raw 以及 /instruction_text 。
 发布：/cmd_vel (发送至 chassis_driver_node) 。
 
 三、 VLA 功能包工程结构
