@@ -1,0 +1,29 @@
+# Sprint 0：架构确认与基线整理
+- [ ] 对照 design_doc 完成系统模块与接口基线清单
+- [ ] 评估 src 现有包与架构差异并输出迁移策略
+- [ ] 确定缺失包与节点清单（speech、vla、smol_bringup）
+
+# Sprint 1：底盘与安全仲裁框架
+- [ ] 梳理底盘串口数据流并映射到 /odom 与 /imu/data
+- [ ] 设计并实现底盘安全仲裁（/cmd_vel_vla、/teleop/cmd_vel、/e_stop）
+- [ ] 设计底盘单元测试与接口验证
+
+# Sprint 2：视觉采集与发布
+- [ ] 明确 camera_node 发布 /camera/image_raw 的实现路径
+- [ ] 对齐相机参数与 QoS 配置
+- [ ] 设计视觉发布的单元测试
+
+# Sprint 3：语音模块
+- [ ] 定义 speech_node 输入与 /instruction_text 输出规范
+- [ ] 选型语音识别实现并完成最小可用版本
+- [ ] 设计语音指令处理单元测试
+
+# Sprint 4：VLA 决策桥接
+- [ ] 建立 vla 包结构与 vla_bridge_node
+- [ ] 实现同步策略与动作队列控制逻辑
+- [ ] 对接 smol_vla_policy 并设计推理接口测试
+
+# Sprint 5：系统级启动与集成
+- [ ] 建立 smol_bringup 启动包与系统参数分层
+- [ ] 建立系统级启动顺序与降级策略验证
+- [ ] 设计端到端集成测试

@@ -42,7 +42,6 @@ class UgvDriver(Node):
     def cmd_vel_callback(self, msg):
         linear_velocity = msg.linear.x
         angular_velocity = msg.angular.z
-
         # Apply minimum threshold to angular velocity if linear velocity is zero
         if linear_velocity == 0:
             if 0 < angular_velocity < 0.2:
