@@ -1,0 +1,2 @@
+- [Sprint 1][done] 实现 e_stop 急停仲裁，人为触发链路 TBD（待 VLA 完成后明确）
+- [Sprint 0] 评估EKF与IMU参数文件的必要性

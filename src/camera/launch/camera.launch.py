@@ -17,8 +17,8 @@ from launch_ros.descriptions import ComposableNode
 # Define a function to generate the launch description
 def generate_launch_description():
 
-    # Get the package directory for the ugv_vision package
-    pkg_dir = get_package_share_directory('ugv_vision')
+    # Get the package directory for the camera package
+    pkg_dir = get_package_share_directory('camera')
     # Get the path to the params.yaml file
     param_file = os.path.join(pkg_dir, 'config', 'params.yaml') 
     

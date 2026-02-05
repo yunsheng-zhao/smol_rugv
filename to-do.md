@@ -1,12 +1,14 @@
 # Sprint 0：架构确认与基线整理
-- [ ] 对照 design_doc 完成系统模块与接口基线清单
-- [ ] 评估 src 现有包与架构差异并输出迁移策略
-- [ ] 确定缺失包与节点清单（speech、vla、smol_bringup）
+- [x] 对照 design_doc 完成系统模块与接口基线清单
+- [x] 评估 src 现有包与架构差异并输出迁移策略
+- [x] 确定缺失包与节点清单（speech、vla、smol_bringup）
+- [x] 检查并替换代码中的 ugv_vision 命名为 camera
+- [x] 评估 EKF 与 IMU 参数文件的必要性
 
 # Sprint 1：底盘与安全仲裁框架
-- [ ] 梳理底盘串口数据流并映射到 /odom 与 /imu/data
-- [ ] 设计并实现底盘安全仲裁（/cmd_vel_vla、/teleop/cmd_vel、/e_stop）
-- [ ] 设计底盘单元测试与接口验证
+- [x] 梳理底盘串口数据流并映射到 /odom/odom_raw 与 /imu/data_raw
+- [x] 设计并实现 e_stop 急停仲裁（人为触发链路 TBD，待 VLA 完成后明确）
+- [x] 设计底盘单元测试与接口验证
 
 # Sprint 2：视觉采集与发布
 - [ ] 明确 camera_node 发布 /camera/image_raw 的实现路径
@@ -27,3 +29,4 @@
 - [ ] 建立 smol_bringup 启动包与系统参数分层
 - [ ] 建立系统级启动顺序与降级策略验证
 - [ ] 设计端到端集成测试
+- [ ] 明确 e_stop 人为触发链路（TBD，待 VLA 完成后明确）

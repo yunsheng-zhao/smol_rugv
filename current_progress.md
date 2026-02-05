@@ -1,5 +1,11 @@
 # 当前进度
 - 已完成 Sprint 0 的任务 1：输出架构模块与接口基线清单
 - 已完成 Sprint 0 的任务 2：评估现有源码与基线差异并给出迁移策略
+- 已完成 Sprint 0 的任务 3：确定缺失包与节点清单
 - 已同步设计文档话题名称到现有代码
 - 已注释 apriltag 相关启动代码
+- 已完成 Sprint 0：替换 ugv_vision 命名为 camera
+- 已评估 EKF 与 IMU 参数文件必要性：当前未接入启动链路，暂保留，待 Sprint 1 底盘融合时决定是否启用
+- 已完成 Sprint 1：底盘串口数据流映射为 /odom/odom_raw 与 /imu/data_raw
+- 已实现 Sprint 1：e_stop 急停机制（人为触发链路 TBD，待 VLA 完成后明确）
+- 已完成 Sprint 1：底盘单元测试与接口验证脚本（pytest 未安装，暂未执行）

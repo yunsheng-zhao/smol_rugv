@@ -25,8 +25,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'ugv_bringup = ugv_bringup.ugv_bringup:main',
-            'ugv_driver = ugv_bringup.ugv_driver:main',
+            'ugv_bringup = chassis/ugv_bringup.ugv_bringup:main',
+            'ugv_driver = chassis/ugv_bringup.ugv_driver:main',
         ],
     },
 )

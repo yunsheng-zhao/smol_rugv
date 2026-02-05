@@ -24,6 +24,7 @@ vla/：负责大模型桥接与推理决策 。
 主要任务：通过串口与 ESP32 通信，实现底层协议解析、轮速及 IMU 数据解码，并将控制指令下发给电机 。
 通信话题 ：
 订阅：/cmd_vel (消息类型：geometry_msgs/Twist) 。
+订阅：/e_stop (消息类型：std_msgs/Bool，人为触发链路 TBD，待 VLA 完成后明确) 。
 发布：/odom/odom_raw (消息类型：nav_msgs/Odometry) 。
 发布：/imu/data_raw (消息类型：sensor_msgs/Imu) 。
 

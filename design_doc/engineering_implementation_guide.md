@@ -31,6 +31,7 @@
 | 名称 | 方向 | 类型 | 频率 | QoS | frame_id | 异常/超时行为 |
 |---|---|---|---|---|---|---|
 | /cmd_vel | 订阅 | geometry_msgs/Twist | 0–20 Hz（异步） | Reliable, depth=10, volatile | base_link | 超时>200ms将其视为无效输入并刹停 |
+| /e_stop | 订阅 | std_msgs/Bool | 事件驱动 | Reliable, depth=10, volatile | n/a | true 时立即输出零速度并保持；人为触发链路 TBD（待 VLA 完成后明确） |
 | /odom/odom_raw | 发布 | nav_msgs/Odometry | 50 Hz | sensor_data（BestEffort, depth=10） | odom | 串口/编码器异常时降频并标记状态 |
 | /imu/data_raw | 发布 | sensor_msgs/Imu | 100 Hz | sensor_data（BestEffort, depth=10） | base_link | IMU异常时发布诊断并启用退化策略 |
 

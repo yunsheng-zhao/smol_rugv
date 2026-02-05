@@ -5,7 +5,7 @@ from geometry_msgs.msg import Twist
 import serial  
 import json  
 from sensor_msgs.msg import JointState
-from std_msgs.msg import Float32, Float32MultiArray
+from std_msgs.msg import Float32, Float32MultiArray, Bool
 import subprocess
 import time
 import os
@@ -19,15 +19,23 @@ if is_jetson():
 else:
     serial_port = '/dev/ttyAMA0'
 
-# Initialize serial communication with the UGV
-ser = serial.Serial(serial_port, 115200, timeout=1)
-
 class UgvDriver(Node):
-    def __init__(self, name):
+    def __init__(self, name, serial_client=None, test_mode=False):
         super().__init__(name)
+        self.test_mode = self.declare_parameter("test_mode", test_mode).value
+        self.serial_port = self.declare_parameter("serial_port", serial_port).value
+        self.serial_baud = self.declare_parameter("serial_baud", 115200).value
+        self.ser = serial_client
+        self.sent_json = []
+        self.last_velocity_command = None
+        if self.ser is None and not self.test_mode:
+            self.ser = serial.Serial(self.serial_port, self.serial_baud, timeout=1)
 
         # Subscribe to velocity commands (cmd_vel topic)
         self.cmd_vel_sub_ = self.create_subscription(Twist, "cmd_vel", self.cmd_vel_callback, 10)
+        self.e_stop_sub_ = self.create_subscription(Bool, "e_stop", self.e_stop_callback, 10)
+        self.e_stop_active = False
+        self.e_stop_timer_ = self.create_timer(0.05, self.e_stop_watchdog)
 
         # Subscribe to joint states (ugv/joint_states topic)
         self.joint_states_sub = self.create_subscription(JointState, 'ugv/joint_states', self.joint_states_callback, 10)
@@ -40,8 +48,12 @@ class UgvDriver(Node):
 
     # Callback for processing velocity commands
     def cmd_vel_callback(self, msg):
-        linear_velocity = msg.linear.x
-        angular_velocity = msg.angular.z
+        if self.e_stop_active:
+            linear_velocity = 0.0
+            angular_velocity = 0.0
+        else:
+            linear_velocity = msg.linear.x
+            angular_velocity = msg.angular.z
         # Apply minimum threshold to angular velocity if linear velocity is zero
         if linear_velocity == 0:
             if 0 < angular_velocity < 0.2:
@@ -50,8 +62,27 @@ class UgvDriver(Node):
                 angular_velocity = -0.2
 
         # Send the velocity data to the UGV as a JSON string
-        data = json.dumps({'T': '13', 'X': linear_velocity, 'Z': angular_velocity}) + "\n"
-        ser.write(data.encode())
+        self.send_velocity(linear_velocity, angular_velocity)
+
+    def send_json(self, payload):
+        data = json.dumps(payload) + "\n"
+        self.sent_json.append(payload)
+        if self.ser is not None:
+            self.ser.write(data.encode())
+
+    def send_velocity(self, linear_velocity, angular_velocity):
+        payload = {'T': '13', 'X': linear_velocity, 'Z': angular_velocity}
+        self.last_velocity_command = payload
+        self.send_json(payload)
+
+    def e_stop_callback(self, msg):
+        self.e_stop_active = bool(msg.data)
+        if self.e_stop_active:
+            self.send_velocity(0.0, 0.0)
+
+    def e_stop_watchdog(self):
+        if self.e_stop_active:
+            self.send_velocity(0.0, 0.0)
 
     # Callback for processing joint state updates
     def joint_states_callback(self, msg):
@@ -82,7 +113,8 @@ class UgvDriver(Node):
             "SY": 600,
         }) + "\n"
                 
-        ser.write(joint_data.encode())
+        if self.ser is not None:
+            self.ser.write(joint_data.encode())
 
     # Callback for processing LED control commands
     def led_ctrl_callback(self, msg):
@@ -96,7 +128,8 @@ class UgvDriver(Node):
             "IO5": IO5,
         }) + "\n"
                 
-        ser.write(led_ctrl_data.encode())
+        if self.ser is not None:
+            self.ser.write(led_ctrl_data.encode())
 
     # Callback for processing voltage data
     def voltage_callback(self, msg):
@@ -118,7 +151,8 @@ def main(args=None):
     finally:
         node.destroy_node()
         rclpy.shutdown()
-        ser.close()  # Close the serial connection
+        if node.ser is not None:
+            node.ser.close()
 
 if __name__ == '__main__':
     main()
