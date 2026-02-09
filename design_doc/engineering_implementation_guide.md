@@ -27,6 +27,12 @@
 |---|---|---|---|---|---|---|
 | /instruction_text | 发布 | std_msgs/String | 事件驱动（0–2 Hz） | Reliable, depth=10, volatile | n/a | 无语音输入不影响底盘安全 |
 
+### Speech Implementation Specs (Sprint 3 Update)
+- **输入**: 本地 USB 麦克风 / 板载 Mic (16kHz, 16-bit Mono PCM)
+- **处理**: 基于能量阈值的 VAD 触发录音 -> 本地 ASR 模型识别
+- **输出**: 原始识别文本发布到 `/instruction_text`
+- **异常**: 识别失败或噪音时不发布消息；设备掉线记录 Error 日志
+
 ### Chassis（含内置安全仲裁模块）
 | 名称 | 方向 | 类型 | 频率 | QoS | frame_id | 异常/超时行为 |
 |---|---|---|---|---|---|---|

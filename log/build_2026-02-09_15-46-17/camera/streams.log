@@ -1,0 +1,28 @@
+[1.572s] Invoking command in '/home/jetson/my_ugv/src/camera': CONDA_PROMPT_MODIFIER=(base) PS1=\n(TraeAI-4) \w [$?] $ PYTHONPATH=/home/jetson/my_ugv/build/camera/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/jetson/my_ugv/install/camera/lib/python3.10/site-packages:${PYTHONPATH} __trae_PS1=\n(TraeAI-4) \w [$?] $ /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/camera build --build-base /home/jetson/my_ugv/build/camera/build install --record /home/jetson/my_ugv/build/camera/install.log --single-version-externally-managed install_data
+[2.223s] running egg_info
+[2.267s] creating ../../build/camera/camera.egg-info
+[2.267s] writing ../../build/camera/camera.egg-info/PKG-INFO
+[2.269s] writing dependency_links to ../../build/camera/camera.egg-info/dependency_links.txt
+[2.269s] writing requirements to ../../build/camera/camera.egg-info/requires.txt
+[2.270s] writing top-level names to ../../build/camera/camera.egg-info/top_level.txt
+[2.270s] writing manifest file '../../build/camera/camera.egg-info/SOURCES.txt'
+[2.362s] reading manifest file '../../build/camera/camera.egg-info/SOURCES.txt'
+[2.364s] writing manifest file '../../build/camera/camera.egg-info/SOURCES.txt'
+[2.364s] running build
+[2.365s] running build_py
+[2.365s] creating /home/jetson/my_ugv/build/camera/build/lib/camera
+[2.365s] copying camera/__init__.py -> /home/jetson/my_ugv/build/camera/build/lib/camera
+[2.366s] running install
+[2.376s] running install_lib
+[2.422s] creating /home/jetson/my_ugv/install/camera/lib/python3.10/site-packages/camera
+[2.422s] copying /home/jetson/my_ugv/build/camera/build/lib/camera/__init__.py -> /home/jetson/my_ugv/install/camera/lib/python3.10/site-packages/camera
+[2.423s] byte-compiling /home/jetson/my_ugv/install/camera/lib/python3.10/site-packages/camera/__init__.py to __init__.cpython-310.pyc
+[2.424s] running install_data
+[2.424s] creating /home/jetson/my_ugv/install/camera/share/ament_index/resource_index/packages
+[2.424s] copying resource/camera -> /home/jetson/my_ugv/install/camera/share/ament_index/resource_index/packages
+[2.425s] copying package.xml -> /home/jetson/my_ugv/install/camera/share/camera
+[2.425s] running install_egg_info
+[2.473s] Copying ../../build/camera/camera.egg-info to /home/jetson/my_ugv/install/camera/lib/python3.10/site-packages/camera-0.0.0-py3.10.egg-info
+[2.475s] running install_scripts
+[2.568s] writing list of installed files to '/home/jetson/my_ugv/build/camera/install.log'
+[2.634s] Invoked command in '/home/jetson/my_ugv/src/camera' returned '0': CONDA_PROMPT_MODIFIER=(base) PS1=\n(TraeAI-4) \w [$?] $ PYTHONPATH=/home/jetson/my_ugv/build/camera/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/jetson/my_ugv/install/camera/lib/python3.10/site-packages:${PYTHONPATH} __trae_PS1=\n(TraeAI-4) \w [$?] $ /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/camera build --build-base /home/jetson/my_ugv/build/camera/build install --record /home/jetson/my_ugv/build/camera/install.log --single-version-externally-managed install_data

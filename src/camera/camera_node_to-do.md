@@ -1,3 +1,3 @@
 - [Sprint 0][done] remove april tag tracking node
-- [Sprint 2] Create a node for the usb_cam package, may need install usb_cam package from ros2 repository
+- [Sprint 2][done] Create a node for the usb_cam package, may need install usb_cam package from ros2 repository
 - [Sprint 0][done] check if there are rest un-matched name in code, change ugv_vision to camera

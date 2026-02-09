@@ -8,4 +8,6 @@
 - 已评估 EKF 与 IMU 参数文件必要性：当前未接入启动链路，暂保留，待 Sprint 1 底盘融合时决定是否启用
 - 已完成 Sprint 1：底盘串口数据流映射为 /odom/odom_raw 与 /imu/data_raw
 - 已实现 Sprint 1：e_stop 急停机制（人为触发链路 TBD，待 VLA 完成后明确）
-- 已完成 Sprint 1：底盘单元测试与接口验证脚本（pytest 未安装，暂未执行）
+- 已完成 Sprint 1：底盘单元测试与接口验证脚本（测试执行移至 Sprint 5）
+- 已完成 Sprint 2：camera_node 对接 usb_cam，实现路径为 /camera/image_raw
+- 已完成 Sprint 2：相机参数 frame_id 对齐及 QoS 配置

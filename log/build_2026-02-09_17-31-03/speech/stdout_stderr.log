@@ -1,0 +1,31 @@
+running egg_info
+creating ../../build/speech/speech.egg-info
+writing ../../build/speech/speech.egg-info/PKG-INFO
+writing dependency_links to ../../build/speech/speech.egg-info/dependency_links.txt
+writing entry points to ../../build/speech/speech.egg-info/entry_points.txt
+writing requirements to ../../build/speech/speech.egg-info/requires.txt
+writing top-level names to ../../build/speech/speech.egg-info/top_level.txt
+writing manifest file '../../build/speech/speech.egg-info/SOURCES.txt'
+reading manifest file '../../build/speech/speech.egg-info/SOURCES.txt'
+writing manifest file '../../build/speech/speech.egg-info/SOURCES.txt'
+running build
+running build_py
+creating /home/jetson/my_ugv/build/speech/build/lib/speech
+copying speech/__init__.py -> /home/jetson/my_ugv/build/speech/build/lib/speech
+copying speech/speech_node.py -> /home/jetson/my_ugv/build/speech/build/lib/speech
+running install
+running install_lib
+creating /home/jetson/my_ugv/install/speech/lib/python3.10/site-packages/speech
+copying /home/jetson/my_ugv/build/speech/build/lib/speech/__init__.py -> /home/jetson/my_ugv/install/speech/lib/python3.10/site-packages/speech
+copying /home/jetson/my_ugv/build/speech/build/lib/speech/speech_node.py -> /home/jetson/my_ugv/install/speech/lib/python3.10/site-packages/speech
+byte-compiling /home/jetson/my_ugv/install/speech/lib/python3.10/site-packages/speech/__init__.py to __init__.cpython-310.pyc
+byte-compiling /home/jetson/my_ugv/install/speech/lib/python3.10/site-packages/speech/speech_node.py to speech_node.cpython-310.pyc
+running install_data
+creating /home/jetson/my_ugv/install/speech/share/ament_index/resource_index/packages
+copying resource/speech -> /home/jetson/my_ugv/install/speech/share/ament_index/resource_index/packages
+copying package.xml -> /home/jetson/my_ugv/install/speech/share/speech
+running install_egg_info
+Copying ../../build/speech/speech.egg-info to /home/jetson/my_ugv/install/speech/lib/python3.10/site-packages/speech-0.0.0-py3.10.egg-info
+running install_scripts
+Installing speech_node script to /home/jetson/my_ugv/install/speech/lib/speech
+writing list of installed files to '/home/jetson/my_ugv/build/speech/install.log'
