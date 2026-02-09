@@ -1,6 +1,0 @@
-source;share/speech/hook/pythonpath.ps1
-source;share/speech/hook/pythonpath.dsv
-source;share/speech/hook/pythonpath.sh
-source;share/speech/hook/ament_prefix_path.ps1
-source;share/speech/hook/ament_prefix_path.dsv
-source;share/speech/hook/ament_prefix_path.sh

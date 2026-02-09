@@ -19,8 +19,8 @@
 - [x] 选型语音识别实现并完成最小可用版本
 
 # Sprint 4：VLA 决策桥接
-- [ ] 建立 vla 包结构与 vla_bridge_node
-- [ ] 实现同步策略与动作队列控制逻辑
+- [x] 建立 vla 包结构与 vla_bridge_node
+- [x] 实现同步策略与动作队列控制逻辑
 
 # Sprint 5：系统级启动与集成
 - [ ] 建立 smol_bringup 启动包与系统参数分层

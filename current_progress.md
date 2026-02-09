@@ -11,3 +11,5 @@
 - 已完成 Sprint 1：底盘单元测试与接口验证脚本（测试执行移至 Sprint 5）
 - 已完成 Sprint 2：camera_node 对接 usb_cam，实现路径为 /camera/image_raw
 - 已完成 Sprint 2：相机参数 frame_id 对齐及 QoS 配置
+- 已完成 Sprint 4：VLA 模块架构设计与基础代码实现（vla_bridge_node, ros_io, shared_buffer, smol_vla_policy_wrapper）
+- 已完成 Sprint 4：实现动作队列与 Receding Horizon 控制逻辑
