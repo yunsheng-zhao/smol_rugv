@@ -8,7 +8,8 @@ class InputMapper:
     def __init__(self):
         # TODO: These keys should ideally be configurable or inferred from the model config
         # "observation.images.camera" is a common convention in LeRobot datasets
-        self.image_key = "observation.images.camera" 
+        # Default to 'laptop' or 'camera' based on typical datasets, but allow override if needed
+        self.image_key = "observation.images.laptop" 
         self.state_key = "observation.state"
         self.task_key = "task"
 
@@ -24,18 +25,18 @@ class InputMapper:
 
         # 2. State (Proprioception)
         # We map Odometry to 'observation.state'.
-        # Assuming the model expects [vx, vy, wz] for a mobile base
         if snapshot_data.get("odom") is not None:
             odom = snapshot_data["odom"]
             # Construct a state vector. 
-            # Current best guess for a UGV: Linear Velocity (x, y) + Angular Velocity (z)
-            # This matches typical 'velocity control' inputs.
-            # If the model expects absolute position, we would use odom['position'].
-            # Using velocity is safer for local control policies.
-            state_vec = np.concatenate([
-                odom["linear_velocity"][:2],  # vx, vy
-                odom["angular_velocity"][2:3] # wz
-            ]).astype(np.float32)
+            # UGV State Space Adaptation: [vx, wz]
+            # We strictly use Linear Velocity X and Angular Velocity Z.
+            # This matches the action space (differential drive control) and minimizes 
+            # the gap between simulation/training and reality.
+            # Note: SmolVLA will automatically pad this to max_state_dim if needed.
+            vx = odom["linear_velocity"][0]
+            wz = odom["angular_velocity"][2]
+            
+            state_vec = np.array([vx, wz], dtype=np.float32)
             mapped[self.state_key] = state_vec
         
         # 3. Task (Instruction)

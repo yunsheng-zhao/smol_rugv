@@ -34,14 +34,11 @@ class ActionQueue:
                 if action.shape[0] == 2:
                     vx, wz = float(action[0]), float(action[1])
                 elif action.shape[0] == 3:
-                    # Assuming [vx, vy, wz]
+                    # Assuming [vx, vy, wz] for holonomic, taking vx, wz for diff drive
                     vx, wz = float(action[0]), float(action[2])
-                elif action.shape[0] >= 14:
-                    # Aloha 14-dim action. 
-                    # We need to know which indices correspond to base velocity.
-                    # Usually, if trained with base, it's either separate or part of the vector.
-                    # For now, we assume we can't control it if it's pure arm, or map first 2 dims.
-                    # TODO: Verify index mapping for specific model.
+                else:
+                    # Fallback for unexpected shapes (should be handled by vla_loop)
+                    # We default to stop (0,0)
                     pass
                 
                 self._queue.append((vx, wz))

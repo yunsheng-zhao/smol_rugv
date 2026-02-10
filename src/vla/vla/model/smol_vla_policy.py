@@ -6,12 +6,23 @@ from typing import Tuple, Dict, Any
 
 # Path hacking to include lerobot
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-# Path to project root: model -> vla -> vla -> src -> smol_rugv
-PROJECT_ROOT = os.path.abspath(os.path.join(CURRENT_DIR, "../../../../"))
-LEROBOT_SRC = os.path.join(PROJECT_ROOT, "ref_code", "lerobot-main (SmolVLA)", "src")
+# Attempt to find 'ref_code' by traversing up or using environment variable
+# Priority: ENV > Relative Path
+LEROBOT_SRC = os.environ.get("LEROBOT_SRC")
 
-if LEROBOT_SRC not in sys.path:
+if not LEROBOT_SRC:
+    # Fallback to relative path assuming standard workspace layout: src/vla/vla/model -> ... -> ref_code
+    # model -> vla -> vla -> src -> my_ugv_root -> ref_code
+    # This assumes the package is installed in a way that preserves relative structure to ref_code, 
+    # which is true for symlink install but fragile otherwise.
+    # A more robust way in production is to install lerobot as a python package.
+    PROJECT_ROOT = os.path.abspath(os.path.join(CURRENT_DIR, "../../../../.."))
+    LEROBOT_SRC = os.path.join(PROJECT_ROOT, "ref_code", "lerobot-main (SmolVLA)", "src")
+
+if os.path.exists(LEROBOT_SRC) and LEROBOT_SRC not in sys.path:
     sys.path.append(LEROBOT_SRC)
+else:
+    logging.warning(f"LeRobot source not found at {LEROBOT_SRC}. Ensure 'ref_code' exists or set LEROBOT_SRC env var.")
 
 try:
     from lerobot.policies.smolvla.modeling_smolvla import SmolVLAPolicy
@@ -45,6 +56,26 @@ class SmolVLAPolicyWrapper:
             self.policy = SmolVLAPolicy.from_pretrained(model_id)
             self.policy.to(self.device)
             
+            # --- VLA Adaptation for UGV ---
+            # 1. Force disable Aloha-specific adaptations (joint flipping/gripper conversion)
+            #    This is critical because our action space is [v, w], not mechanical arm joints.
+            if hasattr(self.policy.config, 'adapt_to_pi_aloha') and self.policy.config.adapt_to_pi_aloha:
+                self.logger.warning("Disabling 'adapt_to_pi_aloha' in config to prevent invalid action transformation for UGV.")
+                self.policy.config.adapt_to_pi_aloha = False
+                
+            # 2. Check Action Dimension
+            #    We expect 2 dimensions (v, w). If the loaded model has more (e.g., original 14D model),
+            #    we log a warning but proceed (the inference loop will handle slicing).
+            expected_action_dim = 2
+            if self.policy.config.max_action_dim != expected_action_dim:
+                self.logger.warning(
+                    f"Model action dimension mismatch! Expected {expected_action_dim} (v, w), "
+                    f"but got {self.policy.config.max_action_dim}. "
+                    "Ensure you are using the fine-tuned UGV model. "
+                    "Inference will proceed but actions may be sliced."
+                )
+            # -----------------------------
+
             # FP16 Optimization for CUDA
             if self.device.type == 'cuda':
                 self.logger.info("Converting model to FP16 for optimization.")

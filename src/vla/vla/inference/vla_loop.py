@@ -35,7 +35,10 @@ class VLALoop(threading.Thread):
         self.input_mapper = InputMapper()
         
         self.logger.info("Initializing VLA Model (this may take time)...")
-        self.model = SmolVLAPolicyWrapper(model_id) 
+        self.model = SmolVLAPolicyWrapper(model_id)
+        
+        # State flags
+        self.has_warned_action_dim = False 
         
     def run(self):
         self.running = True
@@ -96,6 +99,19 @@ class VLALoop(threading.Thread):
             self.logger.warning(f"Unexpected action shape: {action.shape}, expected (T, D).")
             return
             
+        # Adapt Action Space for UGV
+        # We expect D=2 (vx, wz).
+        # If D > 2 (e.g., using original 14D model), we slice the first 2 dimensions.
+        # This allows us to test the pipeline even with mismatched models.
+        if action.shape[1] > 2:
+            if not self.has_warned_action_dim:
+                self.logger.warning(f"Action dimension is {action.shape[1]}, slicing to first 2 for UGV (vx, wz).")
+                self.has_warned_action_dim = True
+            action = action[:, :2]
+        elif action.shape[1] < 2:
+            self.logger.error(f"Action dimension {action.shape[1]} is too small for UGV (needs 2: vx, wz).")
+            return
+
         self.action_queue.put_chunk(action)
 
     def stop(self):
