@@ -1,0 +1,13 @@
+chassis_bringup:
+  ros__parameters:
+    test_mode: false
+
+chassis_driver:
+  ros__parameters:
+    test_mode: false
+
+speech_node:
+  ros__parameters: {}
+
+vla_bridge_node:
+  ros__parameters: {}

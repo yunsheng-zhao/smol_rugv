@@ -1,0 +1,14 @@
+system_validation:
+  ros__parameters:
+    enable_launch_order_check: true
+    expected_nodes:
+      - chassis_bringup
+      - chassis_driver
+      - speech_node
+      - vla_bridge_node
+    expected_topics:
+      - /camera/image_raw
+      - /odom/odom_raw
+      - /imu/data_raw
+      - /instruction_text
+      - /cmd_vel

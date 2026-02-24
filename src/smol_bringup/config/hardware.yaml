@@ -1,0 +1,8 @@
+chassis_bringup:
+  ros__parameters:
+    wheel_base: 0.0
+
+chassis_driver:
+  ros__parameters:
+    serial_port: /dev/ttyTHS1
+    serial_baud: 115200

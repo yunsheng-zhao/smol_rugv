@@ -1,0 +1,3 @@
+system_test_mode:
+  ros__parameters:
+    enable_mock_publishers: true

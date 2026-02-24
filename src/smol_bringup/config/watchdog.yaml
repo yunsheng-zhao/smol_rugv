@@ -1,0 +1,7 @@
+system_watchdog:
+  ros__parameters:
+    camera_timeout_ms: 200
+    odom_timeout_ms: 200
+    imu_timeout_ms: 200
+    cmd_vel_timeout_ms: 200
+    fallback_action: stop

@@ -1,0 +1,4 @@
+vla_bridge_node:
+  ros__parameters:
+    model_id: lerobot/smolvla_base
+    inference_rate: 10.0
